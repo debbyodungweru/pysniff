@@ -1,4 +1,5 @@
 import argparse
+from pysniff import manager as pysniff_mgr
 
 def main():
     """PySniff CLI"""
@@ -46,16 +47,26 @@ def main():
     parser.add_argument(
         "--evaluate",
         dest="evaluate",
-        default="vudenc",
+        default=None,
         help="evaluate PySniff with a vulnerability dataset",
         choices=["vudenc"],
     )
 
     args = parser.parse_args()
 
-    # print help if no target files provided
-    if not args.files:
+    # print help if no target file or evaluation args provided
+    if not args.files and not args.evaluate:
         parser.print_usage()
+
+    # initialize manager obj
+    manager = pysniff_mgr.PySniffManager()
+
+    if not args.evaluate:
+        # initialize target files
+        manager.load_files(args.files)
+    else:
+        # evaluate with specified dataset
+        pass
 
 if __name__ == "__main__":
     main()
