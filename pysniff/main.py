@@ -1,5 +1,9 @@
 import argparse
+import textwrap
+
 from pysniff import manager as pysniff_mgr
+from pysniff import rule_loader
+
 
 def main():
     """PySniff CLI"""
@@ -7,7 +11,8 @@ def main():
     # cli options setup
     parser = argparse.ArgumentParser(
         prog="pysniff",
-        description="PySniff - a Python security code smell detector"
+        description="PySniff - a Python security code smell detector",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
     parser.add_argument(
@@ -52,6 +57,19 @@ def main():
         choices=["vudenc"],
     )
 
+    # load and initialize rules as plugins
+    plugin_mgr = rule_loader.MANAGER
+
+    plugin_info = [f"{p.id}\t{p.name}" for p in plugin_mgr.rules]
+    plugin_info = "\n\t".join(sorted(plugin_info))
+
+    epilog_text = textwrap.dedent(
+        """
+            Available rules:
+        """
+    ) + "\t" + plugin_info
+
+    parser.epilog = epilog_text
     args = parser.parse_args()
 
     # print help if no target file or evaluation args provided
@@ -67,6 +85,7 @@ def main():
     else:
         # evaluate with specified dataset
         pass
+
 
 if __name__ == "__main__":
     main()
