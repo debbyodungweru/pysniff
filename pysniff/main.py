@@ -1,4 +1,5 @@
 import argparse
+import sys
 import textwrap
 
 from pysniff import manager as pysniff_mgr
@@ -36,7 +37,7 @@ def main():
         "-r", "--rules",
         dest="rules",
         type=str,
-        help="specify rule IDs for analysis or skip to use all rules",
+        help="specify comma-separated rule IDs for analysis or skip to use all rules",
         default=None,
     )
 
@@ -85,6 +86,17 @@ def main():
     else:
         # evaluate with specified dataset
         pass
+
+    # load specified rules
+    manager.load_rules(args.rules.split(",") if args.rules is not None else None)
+
+    if len(manager.rule_set) == 0:
+        if args.rules:
+            for r in args.rules.split(","):
+                print("Rule not found: " + r)
+        print("Could not load rules")
+        print("exiting...")
+        sys.exit(1)
 
 
 if __name__ == "__main__":

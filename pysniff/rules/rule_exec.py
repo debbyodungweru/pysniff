@@ -5,6 +5,9 @@ from pysniff.rules.base_rule import BaseRule
 
 
 class RuleExec(BaseRule):
+
+    check_types = ["Call",]
+
     id = "PS002"
     name = "exec_used"
     message = "Use of exec() detected"

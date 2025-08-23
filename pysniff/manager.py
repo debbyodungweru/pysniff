@@ -1,5 +1,8 @@
 from pathlib import Path
 
+from pysniff import rule_loader
+
+
 class PySniffManager:
     def __init__(self):
         """Initialize the PySniff manager
@@ -29,3 +32,20 @@ class PySniffManager:
             else:
                 self.excluded_files.append((path, "No such file or directory"))
 
+
+    def load_rules(self, rules):
+        """ Load specified rules
+
+        :param rules: list of rule IDs for analysis
+        :return:
+        """
+        plugin_mgr = rule_loader.MANAGER
+
+        # default to all rules if none specified
+        if rules is None:
+            self.rule_set = set(plugin_mgr.rules)
+        else:
+            for r in rules:
+                rule = plugin_mgr.rules_by_id.get(r)
+                if rule is not None:
+                    self.rule_set.add(rule)

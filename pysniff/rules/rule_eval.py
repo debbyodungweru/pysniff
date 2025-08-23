@@ -6,6 +6,8 @@ from pysniff.rules.base_rule import BaseRule
 
 class RuleEval(BaseRule):
 
+    check_types = ["Call",]
+
     id = "PS001"
     name = "eval_used"
     message = "Use of eval() detected"

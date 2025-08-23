@@ -1,4 +1,7 @@
 class BaseRule:
+
+    check_types = []
+
     id = "PS000"
     name = ""
     message = ""

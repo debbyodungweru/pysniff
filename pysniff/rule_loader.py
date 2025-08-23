@@ -5,7 +5,9 @@ from pysniff.rules.base_rule import BaseRule
 
 class RuleManager:
     def __init__(self):
-        self.rules = None
+        self.rules = []
+        self.rules_by_id = {}
+        self.rules_by_check_type = {}
         self.load_rules()
 
     def load_rules(self):
@@ -22,5 +24,12 @@ class RuleManager:
                     if issubclass(obj, BaseRule) and obj is not BaseRule:
                         rules.append(obj())  # instantiate rule
         self.rules = rules
+        self.rules_by_id = {r.id: r for r in self.rules}
+
+        self.rules_by_check_type = {}
+        for r in self.rules:
+            for c in r.check_types:
+                self.rules_by_check_type.setdefault(c, []).append(r)
+
 
 MANAGER = RuleManager()
