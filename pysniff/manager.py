@@ -61,7 +61,9 @@ class PySniffManager:
         excluded = []
 
         for file in self.file_list:
+            # get absolute file path
             file_path = str(file.resolve())
+
             with open(file, "r") as f:
                 try:
                     self._parse_ast(f.read(), file_path)
@@ -71,7 +73,6 @@ class PySniffManager:
         # remove unparsable files from file_list
         for excl in excluded:
             self.file_list.remove(excl[0])
-
 
     def _parse_ast(self, code, file_path):
         """ Begin parsing the code with ast
