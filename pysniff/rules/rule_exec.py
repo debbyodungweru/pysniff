@@ -15,12 +15,12 @@ class RuleExec(BaseRule):
     cwe = pysniff.CWE("78",
                       "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')")
 
-    def check(self, node, **kwargs):
+    def check(self, node, context):
         # Look for function call to exec()
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "exec":
 
             # exclude user defined functions
-            user_funcs = kwargs.get("user_defined_funcs")
+            user_funcs = context.get("user_defined_funcs")
             if user_funcs is not None and "exec" in user_funcs:
                 return None
 

@@ -12,14 +12,15 @@ class Analyzer(ast.NodeVisitor):
         self.rule_set = rule_set
         self.file_path = file_path
         self.rule_mgr = MANAGER
-        self.user_defined_funcs = set()
+
+        self.context = {}
 
     def visit_FunctionDef(self, node):
         self.generic_visit(node)
 
 
     def visit_Call(self, node):
-        self._run_check(node, "Call", user_defined_funcs=self.user_defined_funcs)
+        self._run_check(node, "Call", self.context)
         self.generic_visit(node)
 
 
@@ -49,12 +50,14 @@ class Analyzer(ast.NodeVisitor):
 
     def run(self, code):
         self.root_node = ast.parse(code)
+
+        # load some contextual data
         self._get_user_func_names(self.root_node)
 
         self.visit(self.root_node)
 
 
-    def _run_check(self, ast_node, check_type, **kwargs):
+    def _run_check(self, ast_node, check_type, context):
         """ Call the check function of each rule against the ast node
 
             :param ast_node: The ast node to check
@@ -64,7 +67,7 @@ class Analyzer(ast.NodeVisitor):
 
         for rule in self.rule_mgr.rules_by_check_type[check_type]:
             if rule in self.rule_set:
-                issue = rule.check(ast_node, **kwargs)
+                issue = rule.check(ast_node, context)
 
                 if issue is not None:
                     issue.file_path = self.file_path
@@ -77,8 +80,9 @@ class Analyzer(ast.NodeVisitor):
         :param root_node: The ast node to collect functions from
         :returns:
         """
+        self.context["user_defined_funcs"] = set()
 
         for node in ast.walk(root_node):
             # collect user defined functions
             if isinstance(node, ast.FunctionDef):
-                self.user_defined_funcs.add(node.name)
+                self.context["user_defined_funcs"].add(node.name)

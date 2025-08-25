@@ -17,12 +17,12 @@ class RuleEval(BaseRule):
                       "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')")
 
 
-    def check(self, node, **kwargs):
+    def check(self, node, context):
         # Look for function call to eval()
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "eval":
 
             # exclude user defined functions
-            user_funcs = kwargs.get("user_defined_funcs")
+            user_funcs = context.get("user_defined_funcs")
             if user_funcs is not None and "eval" in user_funcs:
                 return None
 

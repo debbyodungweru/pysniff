@@ -13,11 +13,11 @@ class BaseRule:
     cwe = pysniff.CWE("", "")
 
 
-    def check(self, node, **kwargs):
+    def check(self, node, context):
         """ Main rule logic
 
         :param node: ast node to check
-        :param kwargs: additional keyword arguments
+        :param context: dictionary with contextual information
         :returns: pysniff.issue.Issue
         """
         return None
