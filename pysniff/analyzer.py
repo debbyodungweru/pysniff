@@ -2,8 +2,6 @@ import ast
 
 from pysniff.rule_loader import MANAGER
 
-def funny():
-    pass
 class Analyzer(ast.NodeVisitor):
 
     def __init__(self, rule_set, file_path):
@@ -16,6 +14,12 @@ class Analyzer(ast.NodeVisitor):
         self.context = {}
 
     def visit_FunctionDef(self, node):
+        self._run_check(node, "FunctionDef", self.context)
+        self.generic_visit(node)
+
+
+    def visit_Assign(self, node):
+        self._run_check(node, "Assign", self.context)
         self.generic_visit(node)
 
 
@@ -24,27 +28,8 @@ class Analyzer(ast.NodeVisitor):
         self.generic_visit(node)
 
 
-    def visit_Import(self, node):
-        self.generic_visit(node)
-
-
-    def visit_ImportFrom(self, node):
-        self.generic_visit(node)
-
-
-    def visit_Constant(self, node):
-        self.generic_visit(node)
-
-
-    def visit_Name(self, node):
-        self.generic_visit(node)
-
-
-    def visit_Str(self, node):
-        self.generic_visit(node)
-
-
-    def visit_ExceptHandler(self, node):
+    def visit_Compare(self, node):
+        self._run_check(node, "Compare", self.context)
         self.generic_visit(node)
 
 
