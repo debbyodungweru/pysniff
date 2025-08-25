@@ -11,7 +11,7 @@ class RuleEval(BaseRule):
     id = "PS001"
     name = "eval_used"
     message = "Use of eval() detected"
-    full_description = "Avoid exec(), it exposes programs to code injection and makes code harder to maintain."
+    full_description = "Avoid eval(), it exposes programs to code injection and makes code harder to maintain."
     help_uri = "https://cwe.mitre.org/data/definitions/78.html"
     cwe = pysniff.CWE("78",
                       "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')")
