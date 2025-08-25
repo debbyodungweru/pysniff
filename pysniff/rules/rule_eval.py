@@ -17,18 +17,24 @@ class RuleEval(BaseRule):
                       "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')")
 
 
-    def check(self, node):
+    def check(self, node, **kwargs):
         # Look for function call to eval()
         if isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "eval":
 
-            return pysniff.Issue(
-                rule_id=self.id,
-                rule_name=self.name,
-                line=node.lineno,
-                column=node.col_offset,
-                message=self.message,
-                full_description = self.full_description,
-                help_uri=self.help_uri,
-                cwe=self.cwe,
-            )
+            # exclude user defined functions
+            user_funcs = kwargs.get("user_defined_funcs")
+            if user_funcs is not None and "eval" in user_funcs:
+                return None
+
+            else:
+                return pysniff.Issue(
+                    rule_id=self.id,
+                    rule_name=self.name,
+                    line=node.lineno,
+                    column=node.col_offset,
+                    message=self.message,
+                    full_description = self.full_description,
+                    help_uri=self.help_uri,
+                    cwe=self.cwe,
+                )
         return None

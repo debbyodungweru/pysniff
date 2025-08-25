@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from pysniff import rule_loader
+from pysniff.analyzer import Analyzer
 
 
 class PySniffManager:
@@ -13,6 +14,7 @@ class PySniffManager:
         self.rule_set = set()
         self.output_format = "screen"
         self.excluded_files = []
+        self.issues = []
 
 
     def load_files(self, files):
@@ -49,3 +51,37 @@ class PySniffManager:
                 rule = plugin_mgr.rules_by_id.get(r)
                 if rule is not None:
                     self.rule_set.add(rule)
+
+
+    def run_analysis(self):
+        """ Begin analysis on target source code using specified rules
+
+        :return:
+        """
+        excluded = []
+
+        for file in self.file_list:
+            file_path = str(file.resolve())
+            with open(file, "r") as f:
+                try:
+                    self._parse_ast(f.read(), file_path)
+                except SyntaxError as e:
+                    excluded.append((file, "Unable to parse source code"))
+
+        # remove unparsable files from file_list
+        for excl in excluded:
+            self.file_list.remove(excl[0])
+
+
+    def _parse_ast(self, code, file_path):
+        """ Begin parsing the code with ast
+
+            :param code: The source code to parse
+            :returns:
+        """
+
+        analyzer = Analyzer(self.rule_set, file_path)
+        analyzer.run(code)
+
+        self.issues.extend(analyzer.issues)
+

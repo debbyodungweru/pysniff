@@ -99,5 +99,9 @@ def main():
         sys.exit(1)
 
 
+    # analyze target files
+    manager.run_analysis()
+
+
 if __name__ == "__main__":
     main()
