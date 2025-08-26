@@ -1,4 +1,5 @@
 import pysniff.report_formatters.screen as screen
+import pysniff.report_formatters.sarif as sarif
 
 
 def generate_report(manager, output_format="screen", output_file=None, program_runtime=0):
@@ -15,7 +16,7 @@ def generate_report(manager, output_format="screen", output_file=None, program_r
     if output_format == "json":
         pass
     elif output_format == "sarif":
-        pass
+        report = sarif.get_report(manager, program_runtime)
     else:
         report = screen.get_report(manager, program_runtime)
 
