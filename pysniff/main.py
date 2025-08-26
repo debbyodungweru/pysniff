@@ -1,9 +1,11 @@
 import argparse
 import sys
 import textwrap
+import time
 
 from pysniff import manager as pysniff_mgr
 from pysniff import rule_loader
+from pysniff import report
 
 
 def main():
@@ -71,6 +73,10 @@ def main():
     ) + "\t" + plugin_info
 
     parser.epilog = epilog_text
+
+    # measure program runtime
+    start = time.perf_counter()
+
     args = parser.parse_args()
 
     # print help if no target file or evaluation args provided
@@ -102,6 +108,12 @@ def main():
     # analyze target files
     manager.run_analysis()
 
+    # measure program runtime
+    end = time.perf_counter()
+    program_runtime = end - start
+
+    # prepare and display report
+    report.generate_report(manager, args.output_format, args.output_file, program_runtime)
 
 if __name__ == "__main__":
     main()
