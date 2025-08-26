@@ -32,7 +32,7 @@ def main():
         type=str,
         default="screen",
         help="specify output format",
-        choices=["json", "sarif"],
+        choices=["screen", "json", "sarif"],
     )
 
     parser.add_argument(
@@ -47,7 +47,6 @@ def main():
         "-o", "--output",
         dest="output_file",
         nargs="?",
-        type=argparse.FileType("w", encoding="utf-8"),
         help="specify file to write output to",
         default=None,
     )
