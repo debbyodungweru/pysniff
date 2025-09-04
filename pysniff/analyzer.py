@@ -37,8 +37,8 @@ class Analyzer(ast.NodeVisitor):
         self.root_node = ast.parse(code)
 
         # load some contextual data
+        self.context["root_node"] = self.root_node
         self._get_user_func_names(self.root_node)
-        self._get_sql_cursor_vars(self.root_node)
 
         self.visit(self.root_node)
 
@@ -73,20 +73,3 @@ class Analyzer(ast.NodeVisitor):
             if isinstance(node, ast.FunctionDef):
                 self.context["user_defined_funcs"].add(node.name)
 
-
-    def _get_sql_cursor_vars(self, root_node):
-        """ Collect assignment statements in root_node.
-
-        :param root_node: The ast node to collect assignments from
-        :returns:
-        """
-        self.context["cursor_vars"] = set()
-
-        for node in ast.walk(root_node):
-            # for any assignment statement whose value is a function call
-            if isinstance(node, ast.Assign) and isinstance(node.value, ast.Call):
-                # check if the called function is an attr of an obj, i.e. a method, called "cursor"
-                if isinstance(node.value.func, ast.Attribute) and node.value.func.attr == "cursor":
-                    for target in node.targets:
-                        if isinstance(target, ast.Name):
-                            self.context["cursor_vars"].add(target.id)
