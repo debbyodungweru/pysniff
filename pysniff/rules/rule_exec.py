@@ -12,8 +12,8 @@ class RuleExec(BaseRule):
     message = "Use of exec() detected"
     full_description = "Use of exec() gives attackers a back door into a program's runtime."
     help_uri = "https://cwe.mitre.org/data/definitions/78.html"
-    cwe = pysniff.CWE("78",
-                      "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')")
+    cwe = pysniff.CWE("94",
+                      "Improper Control of Generation of Code ('Code Injection')")
 
     def check(self, node, context):
         # Look for function call to exec()

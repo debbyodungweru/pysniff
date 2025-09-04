@@ -12,9 +12,9 @@ class RuleEval(BaseRule):
     name = "eval_used"
     message = "Use of eval() detected"
     full_description = "Avoid eval(), it exposes programs to code injection and makes code harder to maintain."
-    help_uri = "https://cwe.mitre.org/data/definitions/78.html"
-    cwe = pysniff.CWE("78",
-                      "Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')")
+    help_uri = "https://cwe.mitre.org/data/definitions/94.html"
+    cwe = pysniff.CWE("94",
+                      "Improper Control of Generation of Code ('Code Injection')")
 
 
     def check(self, node, context):
