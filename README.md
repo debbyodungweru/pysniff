@@ -3,6 +3,32 @@
 
 PySniff is a CLI tool for developers designed to find security code smells or common security loopholes in Python source code. PySniff uses ASTs and rule-based detection to find code smells. After scanning, a report is generated which can be formatted in JSON or SARIF.
 
+## Run Locally
+
+Clone the project
+
+```bash
+  git clone https://github.com/debbyodungweru/pysniff.git
+```
+
+Go to the project directory
+
+```bash
+  cd path/to/pysniff
+```
+
+Install locally
+
+```bash
+  python -m pip install path/to/pysniff
+```
+
+Run
+
+```bash
+  pysniff
+```
+
 ## References
 
 AST: [https://docs.python.org/3/library/ast.htm](https://docs.python.org/3/library/ast.htm)
