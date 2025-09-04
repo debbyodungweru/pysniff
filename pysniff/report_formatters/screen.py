@@ -92,7 +92,7 @@ def scan_summary(file_count, rule_count, issue_count, program_runtime):
 
     lines.append(f"\nTotal files scanned\t\t:  {file_count}")
     lines.append(f"Rules applied\t\t\t:  {rule_count}")
-    lines.append(f"Code smells discovered\t:  {issue_count}")
-    lines.append(f"Scan time\t\t\t\t:  {program_runtime:4f}s")
+    lines.append(f"Code smells discovered\t\t:  {issue_count}")
+    lines.append(f"Scan time\t\t\t:  {program_runtime:4f}s")
 
     return "\n".join([line for line in lines])
