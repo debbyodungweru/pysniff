@@ -1,4 +1,5 @@
 import ast
+import warnings
 
 from pysniff.rule_loader import MANAGER
 
@@ -34,6 +35,8 @@ class Analyzer(ast.NodeVisitor):
 
 
     def run(self, code):
+        warnings.filterwarnings("ignore", category=SyntaxWarning)
+
         self.root_node = ast.parse(code)
 
         # load some contextual data
