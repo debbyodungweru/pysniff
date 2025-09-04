@@ -16,7 +16,7 @@ class RuleManager:
 
         for file in os.listdir(rules_dir):
             if file.startswith("rule_") and file.endswith(".py"):
-                module_name = f"rules.{file[:-3]}"
+                module_name = f"pysniff.rules.{file[:-3]}"
                 module = importlib.import_module(module_name)
 
                 # Find classes in module that subclass BaseRule
