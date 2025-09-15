@@ -1,3 +1,5 @@
+import sys
+
 import pysniff.report_formatters.screen as screen
 import pysniff.report_formatters.sarif as sarif
 
@@ -23,10 +25,14 @@ def generate_report(manager, output_format="screen", output_file=None, program_r
 
     # write the report to the output file if specified
     if output_file:
-        with open(output_file, "w") as f:
-            f.write(report)
+        try:
+            with open(output_file, "w") as f:
+                f.write(report)
+                print(f"PySniff report written to file\n\t-> {output_file}")
+        except PermissionError as e:
+            print(f"Could not write to file, {e}")
+            sys.exit(1)
 
-        print(f"PySniff report written to file\n\t-> {output_file}")
 
     # display the report on the screen
     else:
