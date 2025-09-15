@@ -51,9 +51,6 @@ class PySniffManager:
                 rule = plugin_mgr.rules_by_id.get(r)
                 if rule is not None:
                     self.rule_set.add(rule)
-                else:
-                    pass
-                    # TODO: add error message
 
 
     def run_analysis(self):
@@ -69,7 +66,7 @@ class PySniffManager:
 
             with open(file, "r") as f:
                 try:
-                    self._parse_ast(f.read(), file_path)
+                    self.parse_ast(f.read(), file_path)
                 except (PermissionError, SyntaxError, UnicodeDecodeError) as e:
                     excluded.append((file, f"Unable to read file: {e}"))
 
@@ -78,14 +75,18 @@ class PySniffManager:
             self.file_list.remove(excl[0])
 
 
-    def _parse_ast(self, code, file_path):
+    def parse_ast(self, code, file_path, rule_set = None, dataset_name = None):
         """ Begin parsing the code with ast
 
             :param code: The source code to parse
+            :param file_path: The path to the file to parse
+            :param rule_set: Alternative rule set to use for analysis
+            :param dataset_name: name of dataset that file belongs to, in evaluation mode
             :returns:
         """
+        rule_set = rule_set or self.rule_set
 
-        analyzer = Analyzer(self.rule_set, file_path)
+        analyzer = Analyzer(rule_set, file_path, dataset_name)
         analyzer.run(code)
 
         self.issues.extend(analyzer.issues)

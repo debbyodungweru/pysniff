@@ -5,12 +5,13 @@ from pysniff.rule_loader import MANAGER
 
 class Analyzer(ast.NodeVisitor):
 
-    def __init__(self, rule_set, file_path):
+    def __init__(self, rule_set, file_path, dataset_name = None):
         self.root_node = None
         self.issues = []
         self.rule_set = rule_set
         self.file_path = file_path
         self.rule_mgr = MANAGER
+        self.dataset_name = dataset_name
 
         self.context = {}
 
@@ -60,6 +61,11 @@ class Analyzer(ast.NodeVisitor):
 
                 if issue is not None:
                     issue.file_path = self.file_path
+
+                    # set the name of the dataset file where the issue was discovered
+                    if self.dataset_name is not None:
+                        issue.dataset_name = self.dataset_name
+
                     self.issues.append(issue)
 
 

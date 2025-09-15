@@ -2,10 +2,12 @@ import argparse
 import sys
 import textwrap
 import time
+from pprint import pp
 
 from pysniff import manager as pysniff_mgr
 from pysniff import rule_loader
 from pysniff import report
+from pysniff.evaluate.vudenc.manager import VudencManager
 
 
 def main():
@@ -79,18 +81,13 @@ def main():
     args = parser.parse_args()
 
     # print help if no target file or evaluation args provided
-    if not args.files and not args.evaluate:
+    if len(args.files) == 0 and not args.evaluate:
         parser.print_usage()
+        print()
+        sys.exit(0)
 
     # initialize manager obj
     manager = pysniff_mgr.PySniffManager()
-
-    if not args.evaluate:
-        # initialize target files
-        manager.load_files(args.files)
-    else:
-        # evaluate with specified dataset
-        pass
 
     # load specified rules
     manager.load_rules(args.rules.split(",") if args.rules is not None else None)
@@ -103,16 +100,46 @@ def main():
         print("exiting...")
         sys.exit(1)
 
+    # for regular scanning
+    if not args.evaluate:
+        # initialize target files
+        manager.load_files(args.files)
 
-    # analyze target files
-    manager.run_analysis()
+        # analyze target files
+        manager.run_analysis()
 
-    # measure program runtime
-    end = time.perf_counter()
-    program_runtime = end - start
+        # measure program runtime
+        end = time.perf_counter()
+        program_runtime = end - start
 
-    # prepare and display report
-    report.generate_report(manager, args.output_format, args.output_file, program_runtime)
+        # prepare and display report
+        report.generate_report(manager, args.output_format, args.output_file, program_runtime)
+
+    # for PySniff evaluation
+    else:
+        evaluation_mgr = None
+
+        # evaluate with specified datasets
+        if args.evaluate == "vudenc":
+            evaluation_mgr = VudencManager(manager)
+        else:
+            print(f"Unknown dataset: {args.evaluate}")
+            print("exiting...")
+            sys.exit(1)
+
+        print("Loading dataset...")
+        if evaluation_mgr.load_datasets():
+            print("Done loading.")
+        else:
+            print("Could not load dataset")
+            print("exiting...")
+            sys.exit(1)
+
+        print("Starting evaluation...")
+        evaluation_results = evaluation_mgr.run_analysis()
+        print("Done evaluating.\n")
+
+        pp(evaluation_results, indent=2)
 
 if __name__ == "__main__":
     main()
